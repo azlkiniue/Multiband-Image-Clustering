@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/bootstrap.min.css" />
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="js/caman.full.min.js"></script>
+</head>
+<style>
+    /* Basic CSS Styling */
+
+    body {
+        text-align: center;
+        margin: 0 auto;
+    }
+
+    h1 {
+        margin: 10px 0 0 0;
+    }
+
+    canvas {
+        margin: 10px 0;
+    }
+
+    .filters button {
+        margin: 10px 0;
+    }
+
+    input[type="range"] {
+        margin: 0 0 10px 0;
+    }
+
+    .p {
+        padding-top: 50px;
+        clear: both;
+    }
+</style>
+<script>
+    $(function () {
+        var canvas = document.getElementById('canvas');
+        var ctx = canvas.getContext('2d');
+
+        /* Enable Cross Origin Image Editing */
+        img = new Image();
+        img.crossOrigin = '';
+        img.src = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/123941/koala.jpg';
+
+        img.onload = function () {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0, img.width, img.height);
+        }
+
+        var $reset = $('#resetbtn');
+        var $brightness = $('#brightnessbtn');
+        var $noise = $('#noisebtn');
+        var $sepia = $('#sepiabtn');
+        var $contrast = $('#contrastbtn');
+        var $color = $('#colorbtn');
+
+        var $vintage = $('#vintagebtn');
+        var $lomo = $('#lomobtn');
+        var $emboss = $('#embossbtn');
+        var $tiltshift = $('#tiltshiftbtn');
+        var $radialblur = $('#radialblurbtn');
+        var $edgeenhance = $('#edgeenhancebtn');
+
+        var $posterize = $('#posterizebtn');
+        var $clarity = $('#claritybtn');
+        var $orangepeel = $('#orangepeelbtn');
+        var $sincity = $('#sincitybtn');
+        var $sunrise = $('#sunrisebtn');
+        var $crossprocess = $('#crossprocessbtn');
+
+        var $hazydays = $('#hazydaysbtn');
+        var $love = $('#lovebtn');
+        var $grungy = $('#grungybtn');
+        var $jarques = $('#jarquesbtn');
+        var $pinhole = $('#pinholebtn');
+        var $oldboot = $('#oldbootbtn');
+        var $glowingsun = $('#glowingsunbtn');
+
+        var $hdr = $('#hdrbtn');
+        var $oldpaper = $('#oldpaperbtn');
+        var $pleasant = $('#pleasantbtn');
+
+        var $save = $('#savebtn');
+        testval = [];
+        /* As soon as slider value changes call applyFilters */
+        $('input[type=range]').change(applyFilters);
+
+        function applyFilters() {
+            var hue = parseInt($('#hue').val());
+            var cntrst = parseInt($('#contrast').val());
+            var vibr = parseInt($('#vibrance').val());
+            var sep = parseInt($('#sepia').val());
+
+            Caman('#canvas', img, function () {
+                this.revert(false);
+                this.hue(hue).contrast(cntrst).vibrance(vibr).sepia(sep).render();
+            });
+        }
+
+        /* Creating custom filters */
+        Caman.Filter.register("oldpaper", function () {
+            this.pinhole();
+            this.noise(10);
+            this.orangePeel();
+            this.render();
+        });
+
+        Caman.Filter.register("pleasant", function () {
+            this.colorize(60, 105, 218, 10);
+            this.contrast(10);
+            this.sunrise();
+            this.hazyDays();
+            this.render();
+        });
+        Caman.Filter.register("example", function () {
+            this.process("example", function (rgba) {
+                let val = new Caman.Pixel(rgba.r, rgba.g, rgba.b, rgba.a, rgba.c);
+                val.loc = rgba.loc;
+
+                testval.push(val);
+                
+                return rgba;
+            });
+        });
+
+        $reset.on('click', function (e) {
+            $('input[type=range]').val(0);
+            Caman('#canvas', img, function () {
+                console.log(this);
+                // testval = this.pixelData;
+                this.example();
+                this.revert(false);
+                this.render();
+            });
+        });
+
+        /* In built filters */
+        $brightness.on('click', function (e) {
+            Caman('#canvas', function () {
+                this.brightness(30).render();
+            });
+        });
+
+        $noise.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.noise(10).render();
+            });
+        });
+
+        $contrast.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.contrast(10).render();
+            });
+        });
+
+        $sepia.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.sepia(20).render();
+            });
+        });
+
+        $color.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.colorize(60, 105, 218, 10).render();
+            });
+        });
+
+        $vintage.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.vintage().render();
+            });
+        });
+
+        $lomo.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.lomo().render();
+            });
+        });
+
+        $emboss.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.emboss().render();
+            });
+        });
+
+        $tiltshift.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.tiltShift({
+                    angle: 90,
+                    focusWidth: 600
+                }).render();
+            });
+        });
+
+        $radialblur.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.radialBlur().render();
+            });
+        });
+
+        $edgeenhance.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.edgeEnhance().render();
+            });
+        });
+
+        $posterize.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.posterize(8, 8).render();
+            });
+        });
+
+        $clarity.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.clarity().render();
+            });
+        });
+
+        $orangepeel.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.orangePeel().render();
+            });
+        });
+
+        $sincity.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.sinCity().render();
+            });
+        });
+
+        $sunrise.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.sunrise().render();
+            });
+        });
+
+        $crossprocess.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.crossProcess().render();
+            });
+        });
+
+        $love.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.love().render();
+            });
+        });
+
+        $grungy.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.grungy().render();
+            });
+        });
+
+        $jarques.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.jarques().render();
+            });
+        });
+
+        $pinhole.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.pinhole().render();
+            });
+        });
+
+        $oldboot.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.oldBoot().render();
+            });
+        });
+
+        $glowingsun.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.glowingSun().render();
+            });
+        });
+
+        $hazydays.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.hazyDays().render();
+            });
+        });
+
+        /* Calling multiple filters inside same function */
+        $hdr.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.contrast(10);
+                this.contrast(10);
+                this.jarques();
+                this.render();
+            });
+        });
+
+        /* Custom filters that we created */
+        $oldpaper.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.oldpaper();
+                this.render();
+            });
+        });
+
+        $pleasant.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.pleasant();
+                this.render();
+            });
+        });
+
+        /* You can also save it as a jpg image, extension need to be added later after saving image. */
+
+        $save.on('click', function (e) {
+            Caman('#canvas', img, function () {
+                this.render(function () {
+                    this.save('png');
+                });
+            });
+        });
+    });
+</script>
+
+<body>
+    <h1>Image Editor Demo Built with CamanJS</h1>
+    <div class="col-lg-6">
+        <canvas id="canvas"></canvas>
+    </div>
+    <div class="col-lg-6">
+        <div class="col-lg-6">
+            <label for="hue">Hue</label>
+            <input id="hue" name="hue" type="range" min="0" max="300" value="0">
+            <label for="contrast">Contrast</label>
+            <input id="contrast" name="contrast" type="range" min="-20" max="20" value="0">
+        </div>
+        <div class="col-lg-6">
+            <label for="vibrance">Vibrance</label>
+            <input id="vibrance" name="vibrance" type="range" min="0" max="400" value="0">
+            <label for="sepia">Sepia</label>
+            <input id="sepia" name="sepia" type="range" min="0" max="100" value="0">
+        </div>
+        <nav class="filters">
+            <button id="resetbtn" class="btn btn-success">Reset Photo</button>
+            <button id="brightnessbtn" class="btn btn-primary">Brightness</button>
+            <button id="noisebtn" class="btn btn-primary">Noise</button>
+            <button id="sepiabtn" class="btn btn-primary">Sepia</button>
+            <button id="contrastbtn" class="btn btn-primary">Contrast</button>
+            <button id="colorbtn" class="btn btn-primary">Colorize</button>
+        </nav>
+
+        <nav class="filters">
+            <button id="vintagebtn" class="btn btn-primary">Vintage</button>
+            <button id="lomobtn" class="btn btn-primary">Lomo</button>
+            <button id="embossbtn" class="btn btn-primary">Emboss</button>
+            <button id="tiltshiftbtn" class="btn btn-primary">Tilt Shift</button>
+            <button id="radialblurbtn" class="btn btn-primary">Radial Blur</button>
+            <button id="edgeenhancebtn" class="btn btn-primary">Edge Enhance</button>
+        </nav>
+
+        <nav class="filters">
+            <button id="posterizebtn" class="btn btn-primary">Posterize</button>
+            <button id="claritybtn" class="btn btn-primary">Clarity</button>
+            <button id="orangepeelbtn" class="btn btn-primary">Orange Peel</button>
+            <button id="sincitybtn" class="btn btn-primary">Sin City</button>
+            <button id="sunrisebtn" class="btn btn-primary">Sun Rise</button>
+            <button id="crossprocessbtn" class="btn btn-primary">Cross Process</button>
+        </nav>
+
+        <nav class="filters">
+            <button id="hazydaysbtn" class="btn btn-primary">Hazy</button>
+            <button id="lovebtn" class="btn btn-primary">Love</button>
+            <button id="grungybtn" class="btn btn-primary">Grungy</button>
+            <button id="jarquesbtn" class="btn btn-primary">Jarques</button>
+            <button id="pinholebtn" class="btn btn-primary">Pin Hole</button>
+            <button id="oldbootbtn" class="btn btn-primary">Old Boot</button>
+            <button id="glowingsunbtn" class="btn btn-primary">Glow Sun</button>
+        </nav>
+
+        <nav class="filters">
+            <button id="hdrbtn" class="btn btn-warning">HDR Effect</button>
+            <button id="oldpaperbtn" class="btn btn-warning">Old Paper</button>
+            <button id="pleasantbtn" class="btn btn-warning">Pleasant</button>
+            <button id="savebtn" class="btn btn-success">Save Image</button>
+        </nav>
+    </div>
+
+    <p class="p">Demo by Monty Shokeen.
+        <a href="http://www.sitepoint.com/manipulating-images-dynamically-camanjs" target="_blank">See article</a>.</p>
+</body>
+
+</html>

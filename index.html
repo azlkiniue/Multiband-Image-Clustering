@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Multiband Image Clustering</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/bootstrap.min.css" />
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="js/caman.full.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/math.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="jumbotron">
+            <h1 class="display-3">Multiband Image Clustering</h1>
+        </div>
+        <!-- <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pilih File</button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"></div>
+                </div><br> -->
+        <div class="card">
+            <div class="card-body text-capitalize">
+                <!-- Under Construction -->
+                <!-- <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                </div><br>
+                <div class="card-deck">
+                    <div class="card">
+                        <img id="img0" src="img/gb1.GIF" alt="Gambar" class="card-img-top">
+                        <div class="card-body">
+                            <label for="file0" class="btn btn-primary">Open File</label>
+                            <input type="file" onchange="getImage(0)" id="file0" style="position: fixed; top: -100em">
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img id="img1" src="img/gb1.GIF" alt="Gambar" class="card-img-top">
+                        <div class="card-body">
+                            <label for="file1" class="btn btn-primary">Open File</label>
+                            <input type="file" onchange="getImage(1)" id="file1" style="position: fixed; top: -100em">
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img id="img2" src="img/gb1.GIF" alt="Gambar" class="card-img-top">
+                        <div class="card-body">
+                            <label for="file2" class="btn btn-primary">Open File</label>
+                            <input type="file" onchange="getImage(2)" id="file2" style="position: fixed; top: -100em">
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img id="img3" src="img/gb1.GIF" alt="Gambar" class="card-img-top">
+                        <div class="card-body">
+                            <label for="file3" class="btn btn-primary">Open File</label>
+                            <input type="file" onchange="getImage(3)" id="file3" style="position: fixed; top: -100em">
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img id="img4" src="img/gb1.GIF" alt="Gambar" class="card-img-top">
+                        <div class="card-body">
+                            <label for="file4" class="btn btn-primary">Open File</label>
+                            <input type="file" onchange="getImage(4)" id="file4" style="position: fixed; top: -100em">
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img id="img5" src="img/gb1.GIF" alt="Gambar" class="card-img-top">
+                        <div class="card-body">
+                            <label for="file5" class="btn btn-primary">Open File</label>
+                            <input type="file" onchange="getImage(5)" id="file5" style="position: fixed; top: -100em">
+                        </div>
+                    </div>
+                </div>            -->
+                <img id="test0" src="img/gb1.GIF">
+                <img id="test1" src="img/gb2.GIF">
+                <img id="test2" src="img/gb3.GIF">
+                <img id="test3" src="img/gb4.GIF">
+                <img id="test4" src="img/gb5.GIF">
+                <img id="test5" src="img/gb7.GIF">
+                <button class="btn btn-primary" id="process">Test</button>
+                <canvas id="result"></canvas>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script>
+    pixelVal = [];
+
+    canvas = document.getElementById('result');
+        context = canvas.getContext('2d');
+
+        //#region caman getPixel
+        Caman('#test0', function () {
+            this.getPixels(0);
+            this.render();
+            console.log(this);
+        });
+
+        Caman('#test1', function () {
+            this.getPixels(1);
+            this.render();
+            console.log(this);
+        });
+
+        Caman('#test2', function () {
+            this.getPixels(2);
+            this.render();
+            console.log(this);
+        });
+
+        Caman('#test3', function () {
+            this.getPixels(3);
+            this.render();
+            console.log(this);
+        });
+
+        Caman('#test4', function () {
+            this.getPixels(4);
+            this.render();
+            console.log(this);
+        });
+
+        Caman('#test5', function () {
+            this.getPixels(5);
+            this.render();
+            console.log(this);
+        });
+        //#endregion caman getPixel
+
+    $(function () {
+        
+
+    });
+
+    $("#process").click(function () {
+        let height = document.getElementById('test0').height,
+            width = document.getElementById('test0').width,
+            buffer = new Uint8ClampedArray(width * height * 4);
+
+        process(6);
+        let tempClusterResult = [];
+        cluster.forEach((c, key) => {
+            c.forEach(element => {
+                tempClusterResult[element] = key;
+            });
+        });
+        let colors = [
+            { r: 255, g: 0, b: 0 },
+            { r: 0, g: 255, b: 0 },
+            { r: 0, g: 0, b: 255 },
+            { r: 255, g: 255, b: 0 },
+            { r: 0, g: 255, b: 255 },
+            { r: 255, g: 0, b: 255 }
+        ];
+
+        for (var y = 0; y < height; y++) {
+            for (var x = 0; x < width; x++) {
+                var pos = (y * width + x) * 4; // position in buffer based on x and y
+                buffer[pos] = colors[tempClusterResult[y * width + x]].r;           // some R value [0, 255]
+                buffer[pos + 1] = colors[tempClusterResult[y * width + x]].g;           // some G value
+                buffer[pos + 2] = colors[tempClusterResult[y * width + x]].b;           // some B value
+                buffer[pos + 3] = 255;           // set alpha channel
+            }
+        }
+        canvas.height = height;
+        canvas.width = width;
+        // create imageData object
+        var idata = context.createImageData(width, height);
+
+        // set our buffer as source
+        idata.data.set(buffer);
+
+        // update canvas with new data
+        context.putImageData(idata, 0, 0);
+    });
+
+    function process(kNumber) {
+        let start = Date.now();
+        initializeCluster();
+        let iter = 0; initClusterlength = cluster.length;
+        while (cluster.length > kNumber) {
+            let hasil = findNearest();
+            mergeCluster(hasil.result);
+            
+            let percentage = iter++/(initClusterlength - kNumber) * 100;
+            console.log(percentage + "% - Jumlah Cluster: " + cluster.length);
+            // setTimeout(updateProgressBar, 10, percentage);
+            // document.querySelector('.progress-bar').style.width =  percentage + '%';
+        }
+        let end = Date.now();
+        let minutes = Math.floor((end - start) / 60000);
+        let seconds = Math.floor((end - start) / 1000 % 60);
+        console.log("Waktu: " + minutes + " menit " + seconds + " detik."); // elapsed time
+    }
+
+    function updateProgressBar(val) {
+        $('.progress-bar').css('width', val + '%');
+    }
+
+    function initializeCluster() {
+        labels = [];
+        pixelVal.forEach(function (val, key) {
+            labels.push(key);
+        });
+        population = [];
+        pixelVal.forEach(function (val, key) {
+            //let insidePop = {};
+            val.forEach(function (pixel, index) {
+                if (!population[index]) population[index] = {};
+                population[index][key] = pixel.r;
+            });
+        });
+        cluster = [];
+        population.forEach((row, key) => {
+            cluster.push([key]);
+        });
+    }
+
+    function findNearest() {
+        let nearest = {}; //nearest punya properti: value, key (index array yang memuat)
+        nearest.val = Number.MAX_SAFE_INTEGER; //inisialisasi min value
+        let tempDistance;
+        cluster.forEach((rowParent, keyParent) => {
+            let centroParent = getCentroid(rowParent);
+            cluster.forEach((rowChild, keyChild) => {
+                if (keyParent != keyChild) { //centroid linkage
+                    let centroChild = getCentroid(rowChild);
+                    tempDistance = getDistance(centroParent, centroChild);
+                    if (tempDistance < nearest.val) {
+                        nearest.val = tempDistance;
+                        nearest.result = [keyParent, keyChild];
+                    }
+                }
+            });
+        });
+
+        return nearest;
+
+        function getCentroid(clustArray) {
+            let average = {}; //variabel centroid yang akan di-return
+            if (clustArray.length == 1) { //skip jika cluster cuma isi 1
+                return population[clustArray[0]];
+            }
+            clustArray.forEach(data => {
+                labels.forEach(label => {
+                    if (!(label in average)) {
+                        average[label] = [population[data][label]];
+                    } else {
+                        average[label].push(population[data][label]);
+                    }
+                });
+            });
+
+            labels.forEach(label => {
+                average[label] = math.mean(average[label]);
+            });
+
+            return average;
+        }
+
+        function getDistance(a, b) {
+            let distVal, totalDistance = 0;
+            labels.forEach(label => {
+                totalDistance += Math.pow((a[label] - b[label]), 2);
+            });
+            distVal = Math.sqrt(totalDistance);
+            return distVal;
+        }
+    }
+
+    function mergeCluster(result) {
+        let newCluster = [];
+        cluster.forEach((row, key) => {
+            if (result.indexOf(key) == -1) {
+                newCluster.push(row);
+            }
+        });
+        newCluster.push(cluster[result[0]].concat(cluster[result[1]]));
+        cluster = newCluster.slice(); //copy array
+    }
+
+    Caman.Filter.register("getPixels", function (index) {
+        this.process("getPixels", function (rgba) {
+            let val = new Caman.Pixel(rgba.r, rgba.g, rgba.b, rgba.a, rgba.c);
+            val.loc = rgba.loc;
+            if (!pixelVal[index]) pixelVal[index] = [];
+            pixelVal[index].push(val);
+            return rgba;
+        });
+    });
+
+    function getImage(index) {
+        let image = document.getElementById('img' + index),
+            file = document.getElementById('file' + index).files[0],
+            reader = new FileReader();
+        
+        reader.onloadend = function () {
+            image.src = reader.result;
+        }
+
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            image.src = "";
+        }
+    }
+    // var input = $(document.createElement("input"));
+    // input.attr("type", "file");
+    // input.trigger("click");
+</script>
+
+</html>
